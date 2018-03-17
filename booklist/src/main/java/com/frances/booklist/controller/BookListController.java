@@ -34,6 +34,7 @@ public class BookListController {
         public String addToReadingList(@PathVariable("reader") String reader, Book book){
         book.setReader(reader);
         bookListRepository.save(book);
-        return "redirect:/{reader}";
+        //return "redirect:/{reader}";
+        return "";
     }
 }

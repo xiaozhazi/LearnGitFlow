@@ -1,5 +1,6 @@
 package com.frances.booklist.config;
 
+import com.frances.booklist.entity.Reader;
 import com.frances.booklist.repository.ReaderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -19,7 +20,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
     @Override
     protected void configure(HttpSecurity http) throws Exception{
         http.authorizeRequests()
-                .antMatchers("/").access("hasRole('READER')")
+                .antMatchers("/").access("hasRole('reader')")
                 .antMatchers("/**").permitAll()
                 .and()
                 .formLogin()
@@ -27,12 +28,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
                 .failureUrl("/login?error=true");
     }
     @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception{
-        auth.userDetailsService(new UserDetailsService() {
-            @Override
-            public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-                return readerRepository.findOne(username);
-            }
-        });
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth
+                .userDetailsService(new UserDetailsService() {
+                    @Override
+                    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+                        return readerRepository.findById(username).get();
+                    }
+                });
     }
 }
